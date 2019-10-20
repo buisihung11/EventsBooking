@@ -1,0 +1,8 @@
+.auth-form {
+  width: 40rem;
+  max-width: 80%;
+  margin: 5rem auto;
+}
+.form-actions button {
+  margin-right: 2rem;
+}

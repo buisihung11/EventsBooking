@@ -1,0 +1,21 @@
+//CREATE BOOKING
+mutation {
+  bookEvent(eventId: "5d7470b912bf64007894e2e7"){
+    
+    user{
+      createdEvents{
+        title
+      }
+    }
+    createdAt
+    updatedAt
+  }
+}
+
+query {
+  login(email: "wrong" password: "wrongpassword"){
+    userId
+    token
+    tokenExpiration
+  }
+}
