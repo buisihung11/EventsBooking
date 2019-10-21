@@ -13,6 +13,8 @@ const userSchema = new Schema({
   },
   createdEvents: [
     {
+      //ref help mongoose create relation ship between two model
+      //and will automatically merge these model data
       type: Schema.Types.ObjectId,
       ref: "Event"
     }

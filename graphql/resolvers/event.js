@@ -9,7 +9,7 @@ module.exports = {
     return Event.find()
       .populate({ path: "creator", populate: { path: "createdEvents" } })
       .then(events => {
-        //overide _id because _id from mongo is an obj (old version)
+        //[NO NEED]override _id because _id from mongo is an obj (old version)
         return events.map(event => ({
           ...event._doc,
           date: new Date(event.date).toISOString()
@@ -19,7 +19,7 @@ module.exports = {
         console.log(err);
       });
   },
-
+  //mutation
   createEvent: async (args, req) => {
     if (!req.isAuth) {
       throw new Error("Unauthenticated!");
@@ -39,10 +39,12 @@ module.exports = {
       if (!user) {
         throw new Error("User not found");
       } else {
-        //get the User document
+        //merge the User document
         createdEvent = await savedEvent.populate("creator").execPopulate();
         console.log("CreateEvent");
         console.log(createdEvent);
+        //relations constraint
+        //either event obj or event _id is OK
         user.createdEvents.push(event);
         await user.save();
         return createdEvent;

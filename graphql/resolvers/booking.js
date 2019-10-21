@@ -7,12 +7,18 @@ module.exports = {
     //   throw new Error("Unauthenticated!");
     // }
     try {
-      const bookings = await Booking.find();
+      const bookings = await Booking.find({ user: req.userId })
+        .populate({ path: "user", populate: { path: "createdEvents" } })
+        .populate({ path: "event", populate: { path: "creator" } })
+        .exec();
+
+      console.log(bookings);
+
       return bookings.map(booking => {
         return {
           ...booking._doc,
-          event: getEventDocByID(booking.event),
-          user: getUserDocById(booking.user)
+          createdAt: new Date(booking.createdAt).toISOString(),
+          updatedAt: new Date(booking.updatedAt).toISOString()
         };
       });
     } catch (err) {
@@ -26,15 +32,19 @@ module.exports = {
     try {
       const event = await getEventDocByID(args.eventId);
       if (!event) throw new Error("Not find event");
-      const user = await getUserDocById(event.creator);
+      const user = await getUserDocById(req.userId);
       if (!user) throw new Error("Not find user");
       //for the mongoDB we only need asign the _id of event and user
       const booking = new Booking({
-        event: event.id,
-        user: user.id
+        event: event._id,
+        user: user._id
       });
-      await booking.save();
-      return { ...booking._doc, event: event, user: user };
+      return booking.save().then(savedBooking => {
+        return savedBooking
+          .populate("user")
+          .populate("event")
+          .execPopulate();
+      });
     } catch (err) {
       throw err;
     }

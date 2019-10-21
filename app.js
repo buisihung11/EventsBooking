@@ -23,6 +23,7 @@ app.use((req, res, next) => {
   }
   next();
 });
+//validate incoming request
 
 app.use(isAuth);
 // we can not use isAuth for the route we want because
@@ -46,7 +47,8 @@ mongoose
   )
   .then(() => {
     console.log("Connected");
-    app.listen(8000);
+    //START SERVER
+    app.listen(process.env.port || 8000);
   })
   .catch(err => {
     console.log(err);
